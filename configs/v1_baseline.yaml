@@ -1,0 +1,25 @@
+# 实验元数据
+exp_name: "medical_gpt2_v1_baseline"
+
+# 数据配置
+data:
+  version: "v1"
+  train_path: "data/v1/processed/train.pt"
+  val_path: "data/v1/processed/val.pt"
+  vocab_path: "data/v1/processed/vocab.json"
+  maxlen: 128
+
+# 模型配置
+model:
+  type: "gpt2_v1"
+  n_layer: 2
+  n_head: 2
+  n_embd: 128
+  dropout: 0.1
+
+# 训练配置
+train:
+  epochs: 500
+  batch_size: 4
+  lr: 0.0005
+  device: "auto" # "cuda", "cpu", or "auto"

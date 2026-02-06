@@ -12,6 +12,7 @@ written permission is obtained from the author.
 """
 
 from .gpt2_v1 import MedicalGPT2ModelV1
+from .gpt2_time_v2 import MedicalGPT2ModelV2
 
 def get_model(config):
     """根据配置中的 model.type 实例化对应的模型"""
@@ -19,5 +20,7 @@ def get_model(config):
     
     if model_type == "gpt2_v1":
         return MedicalGPT2ModelV1(config.model)
+    elif model_type == "gpt2_time_v2":
+        return MedicalGPT2ModelV2(config.model)
     else:
         raise ValueError(f"Unsupported model type: {model_type}")

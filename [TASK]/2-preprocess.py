@@ -14,6 +14,19 @@
 
 这是给你的参考，但是需要根据上面的任务进行修订，里面细节有出入：
 
+"""
+ @Author : zhangfan
+ @email  : 61316173 @qq.com @Date   : 2026-02-04
+Copyright (c) 2026 61316173 @qq.com. All Rights Reserved.
+
+NOTICE:  All information contained herein is, and remains
+the property of the author. The intellectual and technical concepts
+contained herein are proprietary to the author and are protected
+by trade secret or copyright law. Dissemination of this information
+or reproduction of this material is strictly forbidden unless prior
+written permission is obtained from the author.
+"""
+
 import torch
 import random
 from tokenizer import MedicalTokenizer # 引用你之前写的类  tokenizer 这个py 在./src/下面

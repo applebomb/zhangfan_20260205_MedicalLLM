@@ -46,12 +46,22 @@ class Trainer:
         for epoch in range(self.epochs):
             self.model.train()
             epoch_loss = 0
+            epoch_loss_cls = 0
+            epoch_loss_time = 0
             
-            for batch_idx, (x, y) in enumerate(train_loader):
-                x, y = x.to(self.device), y.to(self.device)
-                
+            for batch in train_loader:
                 self.optimizer.zero_grad()
-                logits, loss = self.model(x, y)
+                
+                if len(batch) == 5: # V2 Data: (x, y, ages, time_gaps, mask_loss)
+                    x, y, ages, time_gaps, mask_loss = [t.to(self.device) for t in batch]
+                    logits, loss, loss_cls, loss_time = self.model(x, y, ages, time_gaps, mask_loss)
+                    
+                    if loss_cls is not None: epoch_loss_cls += loss_cls.item()
+                    if loss_time is not None: epoch_loss_time += loss_time.item()
+                else: # V1 Data: (x, y)
+                    x, y = batch[0].to(self.device), batch[1].to(self.device)
+                    logits, loss = self.model(x, y)
+                
                 loss.backward()
                 self.optimizer.step()
                 
@@ -59,13 +69,40 @@ class Trainer:
                 global_step += 1
                 
                 self.writer.add_scalar("Loss/train_step", loss.item(), global_step)
+                if len(batch) == 5:
+                    self.writer.add_scalar("Loss/cls_step", loss_cls.item(), global_step)
+                    self.writer.add_scalar("Loss/time_step", loss_time.item(), global_step)
             
             # 验证
-            val_loss, val_acc = evaluate(self.model, val_loader, self.device, self.tokenizer)
+            val_results = evaluate(self.model, val_loader, self.device, self.tokenizer)
+            val_loss = val_results['loss']
+            val_acc = val_results['acc']
+            
             self.writer.add_scalar("Loss/val", val_loss, epoch)
             self.writer.add_scalar("Accuracy/val", val_acc, epoch)
             
-            print(f"Epoch {epoch+1}/{self.epochs} | Train Loss: {epoch_loss/len(train_loader):.4f} | Val Loss: {val_loss:.4f} | Val Acc: {val_acc:.2%}")
+            # 构造训练日志字符串
+            train_avg_loss = epoch_loss / len(train_loader)
+            log_str = f"Epoch {epoch+1}/{self.epochs} | Train: {train_avg_loss:.4f}"
+            
+            if len(batch) == 5:
+                train_cls = epoch_loss_cls / len(train_loader)
+                train_time_contrib = epoch_loss_time / len(train_loader)
+                # 明确展示 Cls 和 Time(加权后) 对总损的贡献
+                log_str += f" [Cls贡献: {train_cls:.4f} + Time贡献: {train_time_contrib:.4f}]"
+            
+            # 构造验证日志字符串
+            val_loss = val_results['loss']
+            val_acc = val_results['acc']
+            log_str += f" | Val: {val_loss:.4f}"
+            
+            if len(batch) == 5:
+                val_cls = val_results.get('loss_cls', 0)
+                val_time_contrib = val_results.get('loss_time', 0)
+                log_str += f" [Cls贡献: {val_cls:.4f} + Time贡献: {val_time_contrib:.4f}]"
+            
+            log_str += f" | Val Acc: {val_acc:.2%}"
+            print(log_str)
             
             # 预测示例展示
             show_predictions(self.model, val_loader, self.device, self.tokenizer)

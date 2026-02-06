@@ -1,3 +1,16 @@
+"""
+ @Author : zhangfan
+ @email  : 61316173 @qq.com @Date   : 2026-02-04
+Copyright (c) 2026 61316173 @qq.com. All Rights Reserved.
+
+NOTICE:  All information contained herein is, and remains
+the property of the author. The intellectual and technical concepts
+contained herein are proprietary to the author and are protected
+by trade secret or copyright law. Dissemination of this information
+or reproduction of this material is strictly forbidden unless prior
+written permission is obtained from the author.
+"""
+
 任务是写出第一个 基础模型
 注意，不要改动除你任务以外的任何文件，包括删除、修改，专心做好自己的任务
 
@@ -23,4 +36,4 @@
 - ./src/train.py 作为训练模型的模块
 - ./src/dataset.py 用来处理数据送入
 - ./src/eval.py 作为验证输出
-- ./src/model_base_202602_ver1.py 为模型 
+- ./src/model_base_202602_ver1.py 为模型

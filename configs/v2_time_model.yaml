@@ -1,0 +1,38 @@
+# @Author : zhangfan
+# @email  : 61316173 @qq.com @Date   : 2026-02-04
+# Copyright (c) 2026 61316173 @qq.com. All Rights Reserved.
+#
+# NOTICE:  All information contained herein is, and remains
+# the property of the author. The intellectual and technical concepts
+# contained herein are proprietary to the author and are protected
+# by trade secret or copyright law. Dissemination of this information
+# or reproduction of this material is strictly forbidden unless prior
+# written permission is obtained from the author.
+
+# 实验元数据
+exp_name: "medical_gpt2_v2_time_model"
+
+# 数据配置
+data:
+  version: "v1"
+  train_path: "data/v1/processed/train.pt"
+  val_path: "data/v1/processed/val.pt"
+  vocab_path: "data/v1/processed/vocab.json"
+  maxlen: 128
+  use_time: true
+
+# 模型配置
+model:
+  type: "gpt2_time_v2"
+  n_layer: 4
+  n_head: 4
+  n_embd: 64
+  dropout: 0.1
+
+# 训练配置
+train:
+  epochs: 5000
+  batch_size: 4
+  lr: 0.001
+  time_loss_weight: 0.9
+  device: "auto" # "cuda", "cpu", or "auto"
